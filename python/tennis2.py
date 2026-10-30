@@ -2,11 +2,10 @@ class TennisGame2:
     """Tracks points for a single tennis game and renders the current score.
 
     score() dispatches on four named conditions - tied, regular (both under
-    4), advantage, and win. Within _regular_score, p1res/p2res are shared
-    scratch variables reused (without being reset) across several `if`
-    blocks, each contributing part of the final "<p1 score>-<p2 score>"
-    string.
+    4), advantage, and win.
     """
+
+    POINT_NAMES: list[str] = ["Love", "Fifteen", "Thirty", "Forty"]
 
     def __init__(self, player1_name: str, player2_name: str) -> None:
         """Store the player names and start both players at zero points."""
@@ -61,57 +60,10 @@ class TennisGame2:
     def _tied_score(self) -> str:
         if self.p1points > 2:
             return "Deuce"
-        result = ""
-        if self.p1points == 0:
-            result = "Love"
-        if self.p1points == 1:
-            result = "Fifteen"
-        if self.p1points == 2:
-            result = "Thirty"
-        return result + "-All"
+        return self.POINT_NAMES[self.p1points] + "-All"
 
     def _regular_score(self) -> str:
-        p1res: str = ""
-        p2res: str = ""
-        if self.p1points > 0 and self.p2points == 0:
-            if self.p1points == 1:
-                p1res = "Fifteen"
-            if self.p1points == 2:
-                p1res = "Thirty"
-            if self.p1points == 3:
-                p1res = "Forty"
-
-            p2res = "Love"
-        if self.p2points > 0 and self.p1points == 0:
-            if self.p2points == 1:
-                p2res = "Fifteen"
-            if self.p2points == 2:
-                p2res = "Thirty"
-            if self.p2points == 3:
-                p2res = "Forty"
-
-            p1res = "Love"
-
-        if self.p1points > self.p2points:
-            if self.p1points == 2:
-                p1res = "Thirty"
-            if self.p1points == 3:
-                p1res = "Forty"
-            if self.p2points == 1:
-                p2res = "Fifteen"
-            if self.p2points == 2:
-                p2res = "Thirty"
-        if self.p2points > self.p1points:
-            if self.p2points == 2:
-                p2res = "Thirty"
-            if self.p2points == 3:
-                p2res = "Forty"
-            if self.p1points == 1:
-                p1res = "Fifteen"
-            if self.p1points == 2:
-                p1res = "Thirty"
-
-        return p1res + "-" + p2res
+        return self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
 
     def _advantage_score(self) -> str:
         """Hardcodes the literal names "player1"/"player2" rather than
