@@ -30,9 +30,9 @@ class TennisGame3:
         """
         point_names: list[str] = ["Love", "Fifteen", "Thirty", "Forty"]
         if self._is_tied():
-            return point_names[self.p1points] + "-All" if self.p1points < 3 else "Deuce"
+            return f"{point_names[self.p1points]}-All" if self.p1points < 3 else "Deuce"
         if self._is_regular():
-            return point_names[self.p1points] + "-" + point_names[self.p2points]
+            return f"{point_names[self.p1points]}-{point_names[self.p2points]}"
         return self._endgame_score()
 
     def _is_tied(self) -> bool:
@@ -48,7 +48,7 @@ class TennisGame3:
         )
         point_difference: int = self.p1points - self.p2points
         return (
-            "Advantage " + leader_name
+            f"Advantage {leader_name}"
             if (point_difference * point_difference == 1)
-            else "Win for " + leader_name
+            else f"Win for {leader_name}"
         )
