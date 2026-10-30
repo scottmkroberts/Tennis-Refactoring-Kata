@@ -42,6 +42,7 @@ class TennisGame3:
         return self.p1points < 4 and self.p2points < 4
 
     def _endgame_score(self) -> str:
+        """ "Advantage" at a 1-point lead, "Win for" at a 2+ point lead."""
         leader_name: str = (
             self.player1_name if self.p1points > self.p2points else self.player2_name
         )
