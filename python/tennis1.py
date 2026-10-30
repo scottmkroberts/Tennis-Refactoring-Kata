@@ -2,10 +2,7 @@ class TennisGame1:
     """Tracks points for a single tennis game and renders the current score."""
 
     POINT_NAMES: list[str] = ["Love", "Fifteen", "Thirty", "Forty"]
-    ALL_SUFFIX: str = "-All"
     DEUCE: str = "Deuce"
-    ADVANTAGE_PREFIX: str = "Advantage "
-    WIN_PREFIX: str = "Win for "
 
     def __init__(self, player1_name: str, player2_name: str) -> None:
         """Store the player names and start both players at zero points."""
@@ -44,7 +41,7 @@ class TennisGame1:
     def _tied_score(self) -> str:
         """ "Love-All" / "Fifteen-All" / "Thirty-All" for 0-2, else "Deuce"."""
         return (
-            self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
+            f"{self.POINT_NAMES[self.p1points]}-All"
             if self.p1points < 3
             else self.DEUCE
         )
@@ -53,13 +50,13 @@ class TennisGame1:
         """ "Advantage" at a 1-point lead, "Win for" at a 2+ point lead."""
         point_difference: int = self.p1points - self.p2points
         if point_difference == 1:
-            return self.ADVANTAGE_PREFIX + self.player1_name
+            return f"Advantage {self.player1_name}"
         if point_difference == -1:
-            return self.ADVANTAGE_PREFIX + self.player2_name
+            return f"Advantage {self.player2_name}"
         if point_difference >= 2:
-            return self.WIN_PREFIX + self.player1_name
-        return self.WIN_PREFIX + self.player2_name
+            return f"Win for {self.player1_name}"
+        return f"Win for {self.player2_name}"
 
     def _regular_score(self) -> str:
         """ "<p1 score>-<p2 score>", e.g. "Forty-Fifteen"."""
-        return self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
+        return f"{self.POINT_NAMES[self.p1points]}-{self.POINT_NAMES[self.p2points]}"
