@@ -1,21 +1,21 @@
 class TennisGame2:
     """Tracks points for a single tennis game and renders the current score.
 
-    This is the deliberately messy/unrefactored version of the kata: score()
-    rebuilds the result through a long run of non-exclusive `if` blocks
-    (not `elif`), relying on later blocks to overwrite earlier ones for the
-    same score, and p1res/p2res are shared scratch variables reused (without
-    being reset) across several of those blocks.
+    score() dispatches on four named conditions - tied, regular (both under
+    4), advantage, and win. Within _regular_score, p1res/p2res are shared
+    scratch variables reused (without being reset) across several `if`
+    blocks, each contributing part of the final "<p1 score>-<p2 score>"
+    string.
     """
 
-    def __init__(self, player1_name, player2_name):
+    def __init__(self, player1_name: str, player2_name: str) -> None:
         """Store the player names and start both players at zero points."""
-        self.player1_name = player1_name
-        self.player2_name = player2_name
-        self.p1points = 0
-        self.p2points = 0
+        self.player1_name: str = player1_name
+        self.player2_name: str = player2_name
+        self.p1points: int = 0
+        self.p2points: int = 0
 
-    def won_point(self, player_name):
+    def won_point(self, player_name: str) -> None:
         """Award a point to the named player.
 
         Anything other than the exact string "player1" is treated as a
@@ -26,31 +26,53 @@ class TennisGame2:
         else:
             self.p2_score()
 
-    def score(self):
-        """Return the current score as a tennis score string.
+    def score(self) -> str:
+        """Return the current score as a tennis score string."""
+        if self._is_tied():
+            return self._tied_score()
+        if self._is_regular():
+            return self._regular_score()
+        if self._is_win():
+            return self._win_score()
+        if self._is_advantage():
+            return self._advantage_score()
+        return ""
 
-        Walks every score range (tied, one player at love, both 1-3 and
-        unequal, advantage, win) as its own `if` block and overwrites
-        `result` each time a later block's condition also matches, rather
-        than branching once. The "Advantage"/"Win for" strings hardcode the
-        literal names "player1"/"player2" instead of
-        self.player1_name/self.player2_name, so output is only correct when
-        those are the names in use.
-        """
+    def _is_tied(self) -> bool:
+        return self.p1points == self.p2points
+
+    def _is_regular(self) -> bool:
+        """Both players are under 4 points (and, by dispatch order, unequal)."""
+        return self.p1points < 4 and self.p2points < 4
+
+    def _is_advantage(self) -> bool:
+        """True whenever one player leads with >=3 points; only correct
+        once _is_win() has already been ruled out, since a player leading
+        by 2+ (a win) also satisfies this condition."""
+        return (self.p1points > self.p2points and self.p2points >= 3) or (
+            self.p2points > self.p1points and self.p1points >= 3
+        )
+
+    def _is_win(self) -> bool:
+        return (self.p1points >= 4 and (self.p1points - self.p2points) >= 2) or (
+            self.p2points >= 4 and (self.p2points - self.p1points) >= 2
+        )
+
+    def _tied_score(self) -> str:
+        if self.p1points > 2:
+            return "Deuce"
         result = ""
-        if self.p1points == self.p2points and self.p1points < 3:
-            if self.p1points == 0:
-                result = "Love"
-            if self.p1points == 1:
-                result = "Fifteen"
-            if self.p1points == 2:
-                result = "Thirty"
-            result += "-All"
-        if self.p1points == self.p2points and self.p1points > 2:
-            result = "Deuce"
+        if self.p1points == 0:
+            result = "Love"
+        if self.p1points == 1:
+            result = "Fifteen"
+        if self.p1points == 2:
+            result = "Thirty"
+        return result + "-All"
 
-        p1res = ""
-        p2res = ""
+    def _regular_score(self) -> str:
+        p1res: str = ""
+        p2res: str = ""
         if self.p1points > 0 and self.p2points == 0:
             if self.p1points == 1:
                 p1res = "Fifteen"
@@ -60,7 +82,6 @@ class TennisGame2:
                 p1res = "Forty"
 
             p2res = "Love"
-            result = p1res + "-" + p2res
         if self.p2points > 0 and self.p1points == 0:
             if self.p2points == 1:
                 p2res = "Fifteen"
@@ -70,9 +91,8 @@ class TennisGame2:
                 p2res = "Forty"
 
             p1res = "Love"
-            result = p1res + "-" + p2res
 
-        if self.p1points > self.p2points and self.p1points < 4:
+        if self.p1points > self.p2points:
             if self.p1points == 2:
                 p1res = "Thirty"
             if self.p1points == 3:
@@ -81,8 +101,7 @@ class TennisGame2:
                 p2res = "Fifteen"
             if self.p2points == 2:
                 p2res = "Thirty"
-            result = p1res + "-" + p2res
-        if self.p2points > self.p1points and self.p2points < 4:
+        if self.p2points > self.p1points:
             if self.p2points == 2:
                 p2res = "Thirty"
             if self.p2points == 3:
@@ -91,42 +110,39 @@ class TennisGame2:
                 p1res = "Fifteen"
             if self.p1points == 2:
                 p1res = "Thirty"
-            result = p1res + "-" + p2res
 
-        if self.p1points > self.p2points and self.p2points >= 3:
-            result = "Advantage player1"
+        return p1res + "-" + p2res
 
-        if self.p2points > self.p1points and self.p1points >= 3:
-            result = "Advantage player2"
+    def _advantage_score(self) -> str:
+        """Hardcodes the literal names "player1"/"player2" rather than
+        self.player1_name/self.player2_name, so output is only correct
+        when those are the names in use."""
+        if self.p1points > self.p2points:
+            return "Advantage player1"
+        return "Advantage player2"
 
-        if (
-            self.p1points >= 4
-            and self.p2points >= 0
-            and (self.p1points - self.p2points) >= 2
-        ):
-            result = "Win for player1"
-        if (
-            self.p2points >= 4
-            and self.p1points >= 0
-            and (self.p2points - self.p1points) >= 2
-        ):
-            result = "Win for player2"
-        return result
+    def _win_score(self) -> str:
+        """Hardcodes the literal names "player1"/"player2" rather than
+        self.player1_name/self.player2_name, so output is only correct
+        when those are the names in use."""
+        if self.p1points > self.p2points:
+            return "Win for player1"
+        return "Win for player2"
 
-    def set_p1_score(self, number):
+    def set_p1_score(self, number: int) -> None:
         """Award player1 `number` points. Not used by the current test suite."""
         for i in range(number):
             self.p1_score()
 
-    def set_p2_score(self, number):
+    def set_p2_score(self, number: int) -> None:
         """Award player2 `number` points. Not used by the current test suite."""
         for i in range(number):
             self.p2_score()
 
-    def p1_score(self):
+    def p1_score(self) -> None:
         """Award player1 a single point."""
         self.p1points += 1
 
-    def p2_score(self):
+    def p2_score(self) -> None:
         """Award player2 a single point."""
         self.p2points += 1
