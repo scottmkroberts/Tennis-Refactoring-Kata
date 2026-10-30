@@ -132,3 +132,9 @@ def test_get_score_most_games(
 def test_get_score_game7(p1_points, p2_points, score, p1_name, p2_name):
     game = play_game(TennisGame7, p1_points, p2_points, p1_name, p2_name)
     assert "Current score: " + score + ", enjoy your game!" == game.score()
+
+
+def test_won_point_with_unrecognized_name_raises():
+    game = TennisGame1("player1", "player2")
+    with pytest.raises(ValueError):
+        game.won_point("not-a-real-player")

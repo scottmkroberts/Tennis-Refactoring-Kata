@@ -11,13 +11,15 @@ class TennisGame1:
     def won_point(self, player_name):
         """Award a point to the named player.
 
-        Anything other than the exact string "player1" is treated as a
-        point for player2 - player_name is otherwise unused and unvalidated.
+        Raises ValueError if player_name is neither player1_name nor
+        player2_name.
         """
-        if player_name == "player1":
+        if player_name == self.player1_name:
             self.p1points += 1
-        else:
+        elif player_name == self.player2_name:
             self.p2points += 1
+        else:
+            raise ValueError(f"Unknown player name: {player_name!r}")
 
     def score(self):
         """Return the current score as a tennis score string.
