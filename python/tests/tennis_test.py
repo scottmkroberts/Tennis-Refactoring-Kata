@@ -132,3 +132,17 @@ def test_get_score_most_games(
 def test_get_score_game7(p1_points, p2_points, score, p1_name, p2_name):
     game = play_game(TennisGame7, p1_points, p2_points, p1_name, p2_name)
     assert "Current score: " + score + ", enjoy your game!" == game.score()
+
+
+@pytest.mark.parametrize(
+    "p1_points p2_points score".split(),
+    [
+        (4, 3, "Advantage Venus"),
+        (3, 4, "Advantage Serena"),
+        (4, 0, "Win for Venus"),
+        (0, 4, "Win for Serena"),
+    ],
+)
+def test_tennis3_score_uses_actual_player_names(p1_points, p2_points, score):
+    game = play_game(TennisGame3, p1_points, p2_points, "Venus", "Serena")
+    assert score == game.score()
