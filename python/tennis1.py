@@ -1,6 +1,12 @@
 class TennisGame1:
     """Tracks points for a single tennis game and renders the current score."""
 
+    POINT_NAMES = ["Love", "Fifteen", "Thirty", "Forty"]
+    ALL_SUFFIX = "-All"
+    DEUCE = "Deuce"
+    ADVANTAGE_PREFIX = "Advantage "
+    WIN_PREFIX = "Win for "
+
     def __init__(self, player1_name, player2_name):
         """Store the player names and start both players at zero points."""
         self.player1_name = player1_name
@@ -30,7 +36,7 @@ class TennisGame1:
         2. Either player at >=4 points (and scores unequal): "Advantage" if
            the point difference is 1, otherwise "Win for" whoever is ahead.
         3. Otherwise (both under 4, unequal): "<p1 score>-<p2 score>" built
-           from a lookup of 0-3 to "Love"/"Fifteen"/"Thirty"/"Forty".
+           from POINT_NAMES, indexed 0-3.
 
         Note: the "Advantage"/"Win for" strings hardcode the literal names
         "player1"/"player2" rather than self.player1_name/self.player2_name,
@@ -39,21 +45,21 @@ class TennisGame1:
         result = ""
         temp_score = 0
         if self.p1points == self.p2points:
-            result = {
-                0: "Love-All",
-                1: "Fifteen-All",
-                2: "Thirty-All",
-            }.get(self.p1points, "Deuce")
+            result = (
+                self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
+                if self.p1points < 3
+                else self.DEUCE
+            )
         elif self.p1points >= 4 or self.p2points >= 4:
             minus_result = self.p1points - self.p2points
             if minus_result == 1:
-                result = "Advantage player1"
+                result = self.ADVANTAGE_PREFIX + "player1"
             elif minus_result == -1:
-                result = "Advantage player2"
+                result = self.ADVANTAGE_PREFIX + "player2"
             elif minus_result >= 2:
-                result = "Win for player1"
+                result = self.WIN_PREFIX + "player1"
             else:
-                result = "Win for player2"
+                result = self.WIN_PREFIX + "player2"
         else:
             for i in range(1, 3):
                 if i == 1:
@@ -61,10 +67,5 @@ class TennisGame1:
                 else:
                     result += "-"
                     temp_score = self.p2points
-                result += {
-                    0: "Love",
-                    1: "Fifteen",
-                    2: "Thirty",
-                    3: "Forty",
-                }[temp_score]
+                result += self.POINT_NAMES[temp_score]
         return result
