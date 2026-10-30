@@ -37,10 +37,6 @@ class TennisGame1:
            the point difference is 1, otherwise "Win for" whoever is ahead.
         3. Otherwise (both under 4, unequal): "<p1 score>-<p2 score>" built
            from POINT_NAMES, indexed 0-3.
-
-        Note: the "Advantage"/"Win for" strings hardcode the literal names
-        "player1"/"player2" rather than self.player1_name/self.player2_name,
-        so this only reads correctly when those are the names in use.
         """
         result = ""
         temp_score = 0
@@ -53,13 +49,13 @@ class TennisGame1:
         elif self.p1points >= 4 or self.p2points >= 4:
             minus_result = self.p1points - self.p2points
             if minus_result == 1:
-                result = self.ADVANTAGE_PREFIX + "player1"
+                result = self.ADVANTAGE_PREFIX + self.player1_name
             elif minus_result == -1:
-                result = self.ADVANTAGE_PREFIX + "player2"
+                result = self.ADVANTAGE_PREFIX + self.player2_name
             elif minus_result >= 2:
-                result = self.WIN_PREFIX + "player1"
+                result = self.WIN_PREFIX + self.player1_name
             else:
-                result = self.WIN_PREFIX + "player2"
+                result = self.WIN_PREFIX + self.player2_name
         else:
             for i in range(1, 3):
                 if i == 1:
