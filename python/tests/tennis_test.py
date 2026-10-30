@@ -152,3 +152,23 @@ def test_won_point_with_unrecognized_name_raises():
 def test_score_uses_actual_player_names(p1_points, p2_points, score):
     game = play_game(TennisGame1, p1_points, p2_points, "Venus", "Serena")
     assert score == game.score()
+
+
+def test_p1_score_awards_a_point_to_player1():
+    game = TennisGame2("player1", "player2")
+    game.p1_score()
+    assert game.score() == "Fifteen-Love"
+
+
+def test_set_p1_score_adds_to_existing_score():
+    game = TennisGame2("player1", "player2")
+    game.p1_score()
+    game.set_p1_score(2)
+    assert game.score() == "Forty-Love"
+
+
+def test_set_p2_score_adds_to_existing_score():
+    game = TennisGame2("player1", "player2")
+    game.p2_score()
+    game.set_p2_score(2)
+    assert game.score() == "Love-Forty"

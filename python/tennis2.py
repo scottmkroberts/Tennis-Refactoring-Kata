@@ -38,14 +38,12 @@ class TennisGame2:
         return ""
 
     def set_p1_score(self, number: int) -> None:
-        """Award player1 `number` points. Not used by the current test suite."""
-        for i in range(number):
-            self.p1_score()
+        """Add `number` points to player1's existing score."""
+        self.p1points += number
 
     def set_p2_score(self, number: int) -> None:
-        """Award player2 `number` points. Not used by the current test suite."""
-        for i in range(number):
-            self.p2_score()
+        """Add `number` points to player2's existing score."""
+        self.p2points += number
 
     def p1_score(self) -> None:
         """Award player1 a single point."""
