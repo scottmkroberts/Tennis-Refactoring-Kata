@@ -42,7 +42,7 @@ class TennisGame1:
         return self.p1points >= 4 or self.p2points >= 4
 
     def _tied_score(self) -> str:
-        """"Love-All" / "Fifteen-All" / "Thirty-All" for 0-2, else "Deuce"."""
+        """ "Love-All" / "Fifteen-All" / "Thirty-All" for 0-2, else "Deuce"."""
         return (
             self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
             if self.p1points < 3
@@ -50,16 +50,16 @@ class TennisGame1:
         )
 
     def _endgame_score(self) -> str:
-        """"Advantage" at a 1-point lead, "Win for" at a 2+ point lead."""
-        minus_result: int = self.p1points - self.p2points
-        if minus_result == 1:
+        """ "Advantage" at a 1-point lead, "Win for" at a 2+ point lead."""
+        point_difference: int = self.p1points - self.p2points
+        if point_difference == 1:
             return self.ADVANTAGE_PREFIX + self.player1_name
-        if minus_result == -1:
+        if point_difference == -1:
             return self.ADVANTAGE_PREFIX + self.player2_name
-        if minus_result >= 2:
+        if point_difference >= 2:
             return self.WIN_PREFIX + self.player1_name
         return self.WIN_PREFIX + self.player2_name
 
     def _regular_score(self) -> str:
-        """"<p1 score>-<p2 score>", e.g. "Forty-Fifteen"."""
+        """ "<p1 score>-<p2 score>", e.g. "Forty-Fifteen"."""
         return self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
