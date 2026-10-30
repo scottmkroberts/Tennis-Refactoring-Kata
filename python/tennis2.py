@@ -2,7 +2,7 @@ class TennisGame2:
     """Tracks points for a single tennis game and renders the current score.
 
     score() dispatches on four named conditions - tied, regular (both under
-    4), advantage, and win.
+    4), win, and advantage.
     """
 
     POINT_NAMES: list[str] = ["Love", "Fifteen", "Thirty", "Forty"]
@@ -69,16 +69,19 @@ class TennisGame2:
         )
 
     def _is_win(self) -> bool:
+        """True whenever one player leads by 2 or more points."""
         return (self.p1points >= 4 and (self.p1points - self.p2points) >= 2) or (
             self.p2points >= 4 and (self.p2points - self.p1points) >= 2
         )
 
     def _tied_score(self) -> str:
+        """ "Love-All" / "Fifteen-All" / "Thirty-All" for 0-2, else "Deuce"."""
         if self.p1points > 2:
             return "Deuce"
         return self.POINT_NAMES[self.p1points] + "-All"
 
     def _regular_score(self) -> str:
+        """ "<p1 score>-<p2 score>", e.g. "Forty-Fifteen"."""
         return self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
 
     def _advantage_score(self) -> str:
