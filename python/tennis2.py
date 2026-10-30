@@ -78,11 +78,11 @@ class TennisGame2:
         """ "Love-All" / "Fifteen-All" / "Thirty-All" for 0-2, else "Deuce"."""
         if self.p1points > 2:
             return "Deuce"
-        return self.POINT_NAMES[self.p1points] + "-All"
+        return f"{self.POINT_NAMES[self.p1points]}-All"
 
     def _regular_score(self) -> str:
         """ "<p1 score>-<p2 score>", e.g. "Forty-Fifteen"."""
-        return self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
+        return f"{self.POINT_NAMES[self.p1points]}-{self.POINT_NAMES[self.p2points]}"
 
     def _advantage_score(self) -> str:
         """Hardcodes the literal names "player1"/"player2" rather than
