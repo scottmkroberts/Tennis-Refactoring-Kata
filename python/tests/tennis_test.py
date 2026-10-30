@@ -100,6 +100,7 @@ test_cases: list[Any] = [
     pytest.param(
         14, 16, "Win for player2", "player1", "player2", id="p2 wins long game"
     ),
+    pytest.param(6, 6, "Deuce", "player1", "player2", id="deuce even after 6 points"),
 ]
 
 
@@ -164,13 +165,27 @@ def test_score_uses_actual_player_names(
 @pytest.mark.parametrize(
     "p1_points, p2_points, expected_score",
     [
-        pytest.param(0, 6, "0-All", id="tiebreak start"),
-        pytest.param(7, 6, "7-6", id="one clear is not a win"),
+        # Level scores
+        pytest.param(0, 0, "0-All", id="tiebreak start"),
+        pytest.param(3, 3, "3-All", id="level mid tiebreak"),
+        pytest.param(6, 6, "6-All", id="level at six, no deuce"),
+        pytest.param(10, 10, "10-All", id="level in a long tiebreak"),
+        # Running scores, no winner yet
+        pytest.param(3, 2, "3-2", id="p1 leads"),
+        pytest.param(2, 3, "2-3", id="p2 leads"),
+        pytest.param(6, 0, "6-0", id="six is not enough to win"),
+        pytest.param(7, 6, "7-6", id="seven but only one clear"),
+        pytest.param(6, 7, "6-7", id="p2 seven but only one clear"),
+        pytest.param(9, 8, "9-8", id="one clear in a long tiebreak"),
+        # Wins
+        pytest.param(7, 0, "Win for player1", id="p1 wins to love"),
+        pytest.param(0, 7, "Win for player2", id="p2 wins to love"),
+        pytest.param(7, 5, "Win for player1", id="p1 wins two clear"),
+        pytest.param(8, 6, "Win for player1", id="p1 wins after six-all"),
+        pytest.param(10, 12, "Win for player2", id="p2 wins long tiebreak"),
     ],
 )
-def test_tiebreak_score(
-    p1_points: int, p2_points: int, expected_score: str
-) -> None:
+def test_tiebreak_score(p1_points: int, p2_points: int, expected_score: str) -> None:
     game = _play_game_with_tiebreaker(
         TennisGame1, p1_points, p2_points, "player1", "player2"
     )
