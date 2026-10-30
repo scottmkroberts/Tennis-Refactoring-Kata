@@ -35,21 +35,23 @@ class TennisGame1:
         lead; a regular game reports the usual tennis terms (Love/
         Fifteen/Thirty/Forty, Deuce, Advantage, Win for).
         """
-        leader_name: str = self._leader_name()
-
         if self.tiebreak:
-            if self._is_tied():
-                return f"{self.p1points}-All"
-            if self._is_tiebreak_won():
-                return f"Win for {leader_name}"
-            return f"{self.p1points}-{self.p2points}"
+            return self._tiebreak_game_score()
+        return self._standard_game_score()
 
-        else:
-            if self._is_tied():
-                return self._tied_score()
-            if self._is_endgame():
-                return self._endgame_score(leader_name)
-            return self._regular_score()
+    def _tiebreak_game_score(self) -> str:
+        if self._is_tied():
+            return f"{self.p1points}-All"
+        if self._is_tiebreak_won():
+            return f"Win for {self._leader_name()}"
+        return f"{self.p1points}-{self.p2points}"
+
+    def _standard_game_score(self) -> str:
+        if self._is_tied():
+            return self._tied_score()
+        if self._is_endgame():
+            return self._endgame_score(self._leader_name())
+        return self._regular_score()
 
     def _is_tied(self) -> bool:
         return self.p1points == self.p2points
