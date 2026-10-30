@@ -4,7 +4,9 @@ class TennisGame1:
     POINT_NAMES: list[str] = ["Love", "Fifteen", "Thirty", "Forty"]
     DEUCE: str = "Deuce"
 
-    def __init__(self, player1_name: str, player2_name: str) -> None:
+    def __init__(
+        self, player1_name: str, player2_name: str, tiebreak: bool = False
+    ) -> None:
         """Store the player names and start both players at zero points."""
         self.player1_name: str = player1_name
         self.player2_name: str = player2_name

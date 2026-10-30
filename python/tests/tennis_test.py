@@ -95,14 +95,25 @@ test_cases = [
 ]
 
 
-def play_game(TennisGame, p1_points, p2_points, p1_name, p2_name):
-    game = TennisGame(p1_name, p2_name)
+def play_points(game, p1_points, p2_points, p1_name, p2_name):
     for i in range(max(p1_points, p2_points)):
         if i < p1_points:
             game.won_point(p1_name)
         if i < p2_points:
             game.won_point(p2_name)
     return game
+
+
+def play_game(TennisGame, p1_points, p2_points, p1_name, p2_name):
+    game = TennisGame(p1_name, p2_name)
+    return play_points(game, p1_points, p2_points, p1_name, p2_name)
+
+
+def play_game_with_tiebreaker(
+    TennisGame, p1_points, p2_points, p1_name, p2_name, tiebreak=True
+):
+    game = TennisGame(p1_name, p2_name, tiebreak)
+    return play_points(game, p1_points, p2_points, p1_name, p2_name)
 
 
 @pytest.mark.parametrize(
@@ -152,3 +163,17 @@ def test_won_point_with_unrecognized_name_raises():
 def test_score_uses_actual_player_names(p1_points, p2_points, score):
     game = play_game(TennisGame1, p1_points, p2_points, "Venus", "Serena")
     assert score == game.score()
+
+
+@pytest.mark.parametrize(
+    "p1_points, p2_points, expected_score",
+    [
+        pytest.param(0, 6, "0-All", id="tiebreak start"),
+        pytest.param(7, 6, "7-6", id="one clear is not a win"),
+    ],
+)
+def test_tiebreak_score(p1_points, p2_points, expected_score):
+    game = play_game_with_tiebreaker(
+        TennisGame1, p1_points, p2_points, "player1", "player2"
+    )
+    assert expected_score == game.score()
