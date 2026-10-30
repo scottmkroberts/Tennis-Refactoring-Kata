@@ -33,6 +33,15 @@ class TennisGame3:
             return point_names[self.p1points] + "-All" if self.p1points < 3 else "Deuce"
         if self._is_regular():
             return point_names[self.p1points] + "-" + point_names[self.p2points]
+        return self._endgame_score()
+
+    def _is_tied(self) -> bool:
+        return self.p1points == self.p2points
+
+    def _is_regular(self) -> bool:
+        return self.p1points < 4 and self.p2points < 4
+
+    def _endgame_score(self) -> str:
         leader_name: str = (
             self.player1_name if self.p1points > self.p2points else self.player2_name
         )
@@ -42,9 +51,3 @@ class TennisGame3:
             if (point_difference * point_difference == 1)
             else "Win for " + leader_name
         )
-
-    def _is_tied(self) -> bool:
-        return self.p1points == self.p2points
-
-    def _is_regular(self) -> bool:
-        return self.p1points < 4 and self.p2points < 4
