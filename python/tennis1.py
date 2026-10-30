@@ -14,6 +14,12 @@ class TennisGame1:
         self.p1points = 0
         self.p2points = 0
 
+    def _is_tied(self):
+        return self.p1points == self.p2points
+
+    def _is_endgame(self):
+        return self.p1points >= 4 or self.p2points >= 4
+
     def won_point(self, player_name):
         """Award a point to the named player.
 
@@ -40,13 +46,13 @@ class TennisGame1:
         """
         result = ""
         temp_score = 0
-        if self.p1points == self.p2points:
+        if self._is_tied():
             result = (
                 self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
                 if self.p1points < 3
                 else self.DEUCE
             )
-        elif self.p1points >= 4 or self.p2points >= 4:
+        elif self._is_endgame():
             minus_result = self.p1points - self.p2points
             if minus_result == 1:
                 result = self.ADVANTAGE_PREFIX + self.player1_name
