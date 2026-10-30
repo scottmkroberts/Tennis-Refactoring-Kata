@@ -48,14 +48,15 @@ class TennisGame1:
 
     def _endgame_score(self) -> str:
         """ "Advantage" at a 1-point lead, "Win for" at a 2+ point lead."""
-        point_difference: int = self.p1points - self.p2points
-        if point_difference == 1:
-            return f"Advantage {self.player1_name}"
-        if point_difference == -1:
-            return f"Advantage {self.player2_name}"
-        if point_difference >= 2:
-            return f"Win for {self.player1_name}"
-        return f"Win for {self.player2_name}"
+        leader_name: str = (
+            self.player1_name if self.p1points > self.p2points else self.player2_name
+        )
+        point_difference: int = abs(self.p1points - self.p2points)
+        return (
+            f"Advantage {leader_name}"
+            if point_difference == 1
+            else f"Win for {leader_name}"
+        )
 
     def _regular_score(self) -> str:
         """ "<p1 score>-<p2 score>", e.g. "Forty-Fifteen"."""
