@@ -1,17 +1,39 @@
 class TennisGame1:
+    """Tracks points for a single tennis game and renders the current score."""
+
     def __init__(self, player1_name, player2_name):
+        """Store the player names and start both players at zero points."""
         self.player1_name = player1_name
         self.player2_name = player2_name
         self.p1points = 0
         self.p2points = 0
 
     def won_point(self, player_name):
+        """Award a point to the named player.
+
+        Anything other than the exact string "player1" is treated as a
+        point for player2 - player_name is otherwise unused and unvalidated.
+        """
         if player_name == "player1":
             self.p1points += 1
         else:
             self.p2points += 1
 
     def score(self):
+        """Return the current score as a tennis score string.
+
+        Three cases, checked in order:
+        1. Equal points: "Love-All" / "Fifteen-All" / "Thirty-All" for 0-2,
+           otherwise "Deuce" (3-3, 4-4, 5-5, ...).
+        2. Either player at >=4 points (and scores unequal): "Advantage" if
+           the point difference is 1, otherwise "Win for" whoever is ahead.
+        3. Otherwise (both under 4, unequal): "<p1 score>-<p2 score>" built
+           from a lookup of 0-3 to "Love"/"Fifteen"/"Thirty"/"Forty".
+
+        Note: the "Advantage"/"Win for" strings hardcode the literal names
+        "player1"/"player2" rather than self.player1_name/self.player2_name,
+        so this only reads correctly when those are the names in use.
+        """
         result = ""
         temp_score = 0
         if self.p1points == self.p2points:
