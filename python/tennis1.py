@@ -1,26 +1,26 @@
 class TennisGame1:
     """Tracks points for a single tennis game and renders the current score."""
 
-    POINT_NAMES = ["Love", "Fifteen", "Thirty", "Forty"]
-    ALL_SUFFIX = "-All"
-    DEUCE = "Deuce"
-    ADVANTAGE_PREFIX = "Advantage "
-    WIN_PREFIX = "Win for "
+    POINT_NAMES: list[str] = ["Love", "Fifteen", "Thirty", "Forty"]
+    ALL_SUFFIX: str = "-All"
+    DEUCE: str = "Deuce"
+    ADVANTAGE_PREFIX: str = "Advantage "
+    WIN_PREFIX: str = "Win for "
 
-    def __init__(self, player1_name, player2_name):
+    def __init__(self, player1_name: str, player2_name: str) -> None:
         """Store the player names and start both players at zero points."""
-        self.player1_name = player1_name
-        self.player2_name = player2_name
-        self.p1points = 0
-        self.p2points = 0
+        self.player1_name: str = player1_name
+        self.player2_name: str = player2_name
+        self.p1points: int = 0
+        self.p2points: int = 0
 
-    def _is_tied(self):
+    def _is_tied(self) -> bool:
         return self.p1points == self.p2points
 
-    def _is_endgame(self):
+    def _is_endgame(self) -> bool:
         return self.p1points >= 4 or self.p2points >= 4
 
-    def won_point(self, player_name):
+    def won_point(self, player_name: str) -> None:
         """Award a point to the named player.
 
         Raises ValueError if player_name is neither player1_name nor
@@ -33,7 +33,7 @@ class TennisGame1:
         else:
             raise ValueError(f"Unknown player name: {player_name!r}")
 
-    def score(self):
+    def score(self) -> str:
         """Return the current score as a tennis score string.
 
         Three cases, checked in order:
@@ -44,8 +44,8 @@ class TennisGame1:
         3. Otherwise (both under 4, unequal): "<p1 score>-<p2 score>" built
            from POINT_NAMES, indexed 0-3.
         """
-        result = ""
-        temp_score = 0
+        result: str = ""
+        temp_score: int = 0
         if self._is_tied():
             result = (
                 self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
@@ -53,7 +53,7 @@ class TennisGame1:
                 else self.DEUCE
             )
         elif self._is_endgame():
-            minus_result = self.p1points - self.p2points
+            minus_result: int = self.p1points - self.p2points
             if minus_result == 1:
                 result = self.ADVANTAGE_PREFIX + self.player1_name
             elif minus_result == -1:
