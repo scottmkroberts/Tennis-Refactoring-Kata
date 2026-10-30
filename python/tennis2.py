@@ -37,6 +37,24 @@ class TennisGame2:
             return self._advantage_score()
         return ""
 
+    def set_p1_score(self, number: int) -> None:
+        """Award player1 `number` points. Not used by the current test suite."""
+        for i in range(number):
+            self.p1_score()
+
+    def set_p2_score(self, number: int) -> None:
+        """Award player2 `number` points. Not used by the current test suite."""
+        for i in range(number):
+            self.p2_score()
+
+    def p1_score(self) -> None:
+        """Award player1 a single point."""
+        self.p1points += 1
+
+    def p2_score(self) -> None:
+        """Award player2 a single point."""
+        self.p2points += 1
+
     def _is_tied(self) -> bool:
         return self.p1points == self.p2points
 
@@ -80,21 +98,3 @@ class TennisGame2:
         if self.p1points > self.p2points:
             return "Win for player1"
         return "Win for player2"
-
-    def set_p1_score(self, number: int) -> None:
-        """Award player1 `number` points. Not used by the current test suite."""
-        for i in range(number):
-            self.p1_score()
-
-    def set_p2_score(self, number: int) -> None:
-        """Award player2 `number` points. Not used by the current test suite."""
-        for i in range(number):
-            self.p2_score()
-
-    def p1_score(self) -> None:
-        """Award player1 a single point."""
-        self.p1points += 1
-
-    def p2_score(self) -> None:
-        """Award player2 a single point."""
-        self.p2points += 1
