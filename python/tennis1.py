@@ -14,12 +14,6 @@ class TennisGame1:
         self.p1points: int = 0
         self.p2points: int = 0
 
-    def _is_tied(self) -> bool:
-        return self.p1points == self.p2points
-
-    def _is_endgame(self) -> bool:
-        return self.p1points >= 4 or self.p2points >= 4
-
     def won_point(self, player_name: str) -> None:
         """Award a point to the named player.
 
@@ -71,3 +65,9 @@ class TennisGame1:
                     temp_score = self.p2points
                 result += self.POINT_NAMES[temp_score]
         return result
+
+    def _is_tied(self) -> bool:
+        return self.p1points == self.p2points
+
+    def _is_endgame(self) -> bool:
+        return self.p1points >= 4 or self.p2points >= 4
