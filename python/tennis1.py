@@ -39,7 +39,6 @@ class TennisGame1:
            from POINT_NAMES, indexed 0-3.
         """
         result: str = ""
-        temp_score: int = 0
         if self._is_tied():
             result = (
                 self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
@@ -57,13 +56,9 @@ class TennisGame1:
             else:
                 result = self.WIN_PREFIX + self.player2_name
         else:
-            for i in range(1, 3):
-                if i == 1:
-                    temp_score = self.p1points
-                else:
-                    result += "-"
-                    temp_score = self.p2points
-                result += self.POINT_NAMES[temp_score]
+            result = (
+                self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
+            )
         return result
 
     def _is_tied(self) -> bool:
