@@ -11,10 +11,10 @@ class TennisGame3:
     def won_point(self, player_name: str) -> None:
         """Award a point to the named player.
 
-        Anything other than the exact string "player1" is treated as a
-        point for player2 - player_name is otherwise unused and unvalidated.
+        Anything other than player1_name is treated as a point for
+        player2 - player_name is otherwise unvalidated.
         """
-        if player_name == "player1":
+        if player_name == self.player1_name:
             self.p1points += 1
         else:
             self.p2points += 1
