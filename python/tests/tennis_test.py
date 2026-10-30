@@ -140,6 +140,7 @@ def test_won_point_with_unrecognized_name_raises():
         game.won_point("not-a-real-player")
 
 
+@pytest.mark.parametrize("TennisGameClass", [TennisGame1, TennisGame2])
 @pytest.mark.parametrize(
     "p1_points p2_points score".split(),
     [
@@ -149,8 +150,8 @@ def test_won_point_with_unrecognized_name_raises():
         (0, 4, "Win for Serena"),
     ],
 )
-def test_score_uses_actual_player_names(p1_points, p2_points, score):
-    game = play_game(TennisGame1, p1_points, p2_points, "Venus", "Serena")
+def test_score_uses_actual_player_names(TennisGameClass, p1_points, p2_points, score):
+    game = play_game(TennisGameClass, p1_points, p2_points, "Venus", "Serena")
     assert score == game.score()
 
 

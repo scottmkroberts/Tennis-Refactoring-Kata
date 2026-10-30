@@ -17,10 +17,10 @@ class TennisGame2:
     def won_point(self, player_name: str) -> None:
         """Award a point to the named player.
 
-        Anything other than the exact string "player1" is treated as a
-        point for player2 - player_name is otherwise unused and unvalidated.
+        Anything other than player1_name is treated as a point for
+        player2 - player_name is otherwise unvalidated.
         """
-        if player_name == "player1":
+        if player_name == self.player1_name:
             self.p1_score()
         else:
             self.p2_score()
@@ -85,17 +85,11 @@ class TennisGame2:
         return f"{self.POINT_NAMES[self.p1points]}-{self.POINT_NAMES[self.p2points]}"
 
     def _advantage_score(self) -> str:
-        """Hardcodes the literal names "player1"/"player2" rather than
-        self.player1_name/self.player2_name, so output is only correct
-        when those are the names in use."""
         if self.p1points > self.p2points:
-            return "Advantage player1"
-        return "Advantage player2"
+            return f"Advantage {self.player1_name}"
+        return f"Advantage {self.player2_name}"
 
     def _win_score(self) -> str:
-        """Hardcodes the literal names "player1"/"player2" rather than
-        self.player1_name/self.player2_name, so output is only correct
-        when those are the names in use."""
         if self.p1points > self.p2points:
-            return "Win for player1"
-        return "Win for player2"
+            return f"Win for {self.player1_name}"
+        return f"Win for {self.player2_name}"
