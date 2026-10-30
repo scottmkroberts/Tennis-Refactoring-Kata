@@ -28,41 +28,38 @@ class TennisGame1:
             raise ValueError(f"Unknown player name: {player_name!r}")
 
     def score(self) -> str:
-        """Return the current score as a tennis score string.
-
-        Three cases, checked in order:
-        1. Equal points: "Love-All" / "Fifteen-All" / "Thirty-All" for 0-2,
-           otherwise "Deuce" (3-3, 4-4, 5-5, ...).
-        2. Either player at >=4 points (and scores unequal): "Advantage" if
-           the point difference is 1, otherwise "Win for" whoever is ahead.
-        3. Otherwise (both under 4, unequal): "<p1 score>-<p2 score>" built
-           from POINT_NAMES, indexed 0-3.
-        """
-        result: str = ""
+        """Return the current score as a tennis score string."""
         if self._is_tied():
-            result = (
-                self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
-                if self.p1points < 3
-                else self.DEUCE
-            )
-        elif self._is_endgame():
-            minus_result: int = self.p1points - self.p2points
-            if minus_result == 1:
-                result = self.ADVANTAGE_PREFIX + self.player1_name
-            elif minus_result == -1:
-                result = self.ADVANTAGE_PREFIX + self.player2_name
-            elif minus_result >= 2:
-                result = self.WIN_PREFIX + self.player1_name
-            else:
-                result = self.WIN_PREFIX + self.player2_name
-        else:
-            result = (
-                self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
-            )
-        return result
+            return self._tied_score()
+        if self._is_endgame():
+            return self._endgame_score()
+        return self._regular_score()
 
     def _is_tied(self) -> bool:
         return self.p1points == self.p2points
 
     def _is_endgame(self) -> bool:
         return self.p1points >= 4 or self.p2points >= 4
+
+    def _tied_score(self) -> str:
+        """"Love-All" / "Fifteen-All" / "Thirty-All" for 0-2, else "Deuce"."""
+        return (
+            self.POINT_NAMES[self.p1points] + self.ALL_SUFFIX
+            if self.p1points < 3
+            else self.DEUCE
+        )
+
+    def _endgame_score(self) -> str:
+        """"Advantage" at a 1-point lead, "Win for" at a 2+ point lead."""
+        minus_result: int = self.p1points - self.p2points
+        if minus_result == 1:
+            return self.ADVANTAGE_PREFIX + self.player1_name
+        if minus_result == -1:
+            return self.ADVANTAGE_PREFIX + self.player2_name
+        if minus_result >= 2:
+            return self.WIN_PREFIX + self.player1_name
+        return self.WIN_PREFIX + self.player2_name
+
+    def _regular_score(self) -> str:
+        """"<p1 score>-<p2 score>", e.g. "Forty-Fifteen"."""
+        return self.POINT_NAMES[self.p1points] + "-" + self.POINT_NAMES[self.p2points]
