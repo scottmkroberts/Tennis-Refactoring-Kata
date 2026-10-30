@@ -1,3 +1,5 @@
+from typing import Any, Protocol
+
 import pytest
 
 from tennis1 import TennisGame1
@@ -8,7 +10,13 @@ from tennis5 import TennisGame5
 from tennis6 import TennisGame6
 from tennis7 import TennisGame7
 
-test_cases = [
+
+class TennisGameLike(Protocol):
+    def won_point(self, player_name: str) -> None: ...
+    def score(self) -> str: ...
+
+
+test_cases: list[Any] = [
     pytest.param(0, 0, "Love-All", "player1", "player2", id="start of game"),
     pytest.param(1, 1, "Fifteen-All", "player1", "player2", id="fifteen all"),
     pytest.param(2, 2, "Thirty-All", "player1", "player2", id="thirty all"),
@@ -95,27 +103,6 @@ test_cases = [
 ]
 
 
-def play_points(game, p1_points, p2_points, p1_name, p2_name):
-    for i in range(max(p1_points, p2_points)):
-        if i < p1_points:
-            game.won_point(p1_name)
-        if i < p2_points:
-            game.won_point(p2_name)
-    return game
-
-
-def play_game(TennisGame, p1_points, p2_points, p1_name, p2_name):
-    game = TennisGame(p1_name, p2_name)
-    return play_points(game, p1_points, p2_points, p1_name, p2_name)
-
-
-def play_game_with_tiebreaker(
-    TennisGame, p1_points, p2_points, p1_name, p2_name, tiebreak=True
-):
-    game = TennisGame(p1_name, p2_name, tiebreak)
-    return play_points(game, p1_points, p2_points, p1_name, p2_name)
-
-
 @pytest.mark.parametrize(
     "TennisGameClass",
     [
@@ -131,21 +118,28 @@ def play_game_with_tiebreaker(
     "p1_points p2_points score p1_name p2_name".split(), test_cases
 )
 def test_get_score_most_games(
-    TennisGameClass, p1_points, p2_points, score, p1_name, p2_name
-):
-    game = play_game(TennisGameClass, p1_points, p2_points, p1_name, p2_name)
+    TennisGameClass: type[TennisGameLike],
+    p1_points: int,
+    p2_points: int,
+    score: str,
+    p1_name: str,
+    p2_name: str,
+) -> None:
+    game = _play_game(TennisGameClass, p1_points, p2_points, p1_name, p2_name)
     assert score == game.score()
 
 
 @pytest.mark.parametrize(
     "p1_points p2_points score p1_name p2_name".split(), test_cases
 )
-def test_get_score_game7(p1_points, p2_points, score, p1_name, p2_name):
-    game = play_game(TennisGame7, p1_points, p2_points, p1_name, p2_name)
+def test_get_score_game7(
+    p1_points: int, p2_points: int, score: str, p1_name: str, p2_name: str
+) -> None:
+    game = _play_game(TennisGame7, p1_points, p2_points, p1_name, p2_name)
     assert "Current score: " + score + ", enjoy your game!" == game.score()
 
 
-def test_won_point_with_unrecognized_name_raises():
+def test_won_point_with_unrecognized_name_raises() -> None:
     game = TennisGame1("player1", "player2")
     with pytest.raises(ValueError):
         game.won_point("not-a-real-player")
@@ -160,8 +154,10 @@ def test_won_point_with_unrecognized_name_raises():
         (0, 4, "Win for Serena"),
     ],
 )
-def test_score_uses_actual_player_names(p1_points, p2_points, score):
-    game = play_game(TennisGame1, p1_points, p2_points, "Venus", "Serena")
+def test_score_uses_actual_player_names(
+    p1_points: int, p2_points: int, score: str
+) -> None:
+    game = _play_game(TennisGame1, p1_points, p2_points, "Venus", "Serena")
     assert score == game.score()
 
 
@@ -172,8 +168,48 @@ def test_score_uses_actual_player_names(p1_points, p2_points, score):
         pytest.param(7, 6, "7-6", id="one clear is not a win"),
     ],
 )
-def test_tiebreak_score(p1_points, p2_points, expected_score):
-    game = play_game_with_tiebreaker(
+def test_tiebreak_score(
+    p1_points: int, p2_points: int, expected_score: str
+) -> None:
+    game = _play_game_with_tiebreaker(
         TennisGame1, p1_points, p2_points, "player1", "player2"
     )
     assert expected_score == game.score()
+
+
+def _play_points(
+    game: TennisGameLike,
+    p1_points: int,
+    p2_points: int,
+    p1_name: str,
+    p2_name: str,
+) -> TennisGameLike:
+    for i in range(max(p1_points, p2_points)):
+        if i < p1_points:
+            game.won_point(p1_name)
+        if i < p2_points:
+            game.won_point(p2_name)
+    return game
+
+
+def _play_game(
+    TennisGame: type[TennisGameLike],
+    p1_points: int,
+    p2_points: int,
+    p1_name: str,
+    p2_name: str,
+) -> TennisGameLike:
+    game = TennisGame(p1_name, p2_name)
+    return _play_points(game, p1_points, p2_points, p1_name, p2_name)
+
+
+def _play_game_with_tiebreaker(
+    TennisGame: type[TennisGame1],
+    p1_points: int,
+    p2_points: int,
+    p1_name: str,
+    p2_name: str,
+    tiebreak: bool = True,
+) -> TennisGameLike:
+    game = TennisGame(p1_name, p2_name, tiebreak)
+    return _play_points(game, p1_points, p2_points, p1_name, p2_name)
